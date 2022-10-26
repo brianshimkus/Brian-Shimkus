@@ -1,4 +1,3 @@
-// [slug].js
 import groq from 'groq'
 import imageUrlBuilder from '@sanity/image-url'
 import { PortableText } from '@portabletext/react'
@@ -26,32 +25,16 @@ const ptComponents = {
 }
 
 const Post = ({ post }) => {
-	const {
-		title = 'Missing title',
-		name = 'Missing name',
-		categories,
-		authorImage,
-		body = [],
-	} = post
+	const { title = 'Missing title', categories, body = [] } = post
 	return (
 		<article>
 			<h1>{title}</h1>
-			<span>By {name}</span>
 			{categories && (
 				<ul>
-					Posted in
 					{categories.map((category) => (
-						<li key={category}>{category}</li>
+						<li key={category}>Category: {category}</li>
 					))}
 				</ul>
-			)}
-			{authorImage && (
-				<div>
-					<img
-						src={urlFor(authorImage).width(50).url()}
-						alt={`${name}'s picture`}
-					/>
-				</div>
 			)}
 			<PortableText value={body} components={ptComponents} />
 		</article>
@@ -60,9 +43,7 @@ const Post = ({ post }) => {
 
 const query = groq`*[_type == "post" && slug.current == $slug][0]{
   title,
-  "name": author->name,
   "categories": categories[]->title,
-  "authorImage": author->image,
   body
 }`
 export async function getStaticPaths() {
